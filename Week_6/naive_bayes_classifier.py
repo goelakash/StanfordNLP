@@ -3,10 +3,12 @@ import os
 from math import log10
 import pickle
 
-FILE_DIR = "datasets"
+FILE_DIR = os.path.dirname(__file__) + "/../datasets"
 TRAIN_FILE = "r8-train-stemmed.txt"
 TEST_FILE = "r8-test-stemmed.txt"
 SAVE_FILE = "trained_model.pkl"
+PREDICTION_FILE = "predicted.txt"
+RESULTS_FILE = "predictions_file.txt"
 
 DELIM = '\t'
 
@@ -70,16 +72,16 @@ except:
 Classification of test set
 """
 
-results = open('result.txt','w')
+predictions_file = open(PREDICTION_FILE,'w')
+results_file = open(RESULTS_FILE, 'w')
 
 print("Classification in progress: ")
 correct_classifications = 0
 
-count = 0
-for line in test_file_lines:
+for i in range(len(test_file_lines)):
 
-	count += 1
-	print("Doc: "+str(count))
+	line = test_file_lines[i]
+	print("Doc: "+str(i+1))
 	actual_class_test = line.split(DELIM)[0]
 	test_doc_body = line.split(DELIM)[1]
 
@@ -96,14 +98,15 @@ for line in test_file_lines:
 			else:
 				score_per_class_dict[doc_class] += log10((single_class_concat_dict[doc_class].count(word) + 1)/(len(single_class_concat_dict[doc_class].split()) + vocab_size + 1))
 
-	print(max(score_per_class_dict, key=score_per_class_dict.get))
-	print(score_per_class_dict[max(score_per_class_dict, key=score_per_class_dict.get)])
 	predicted_class_test = max(score_per_class_dict, key=score_per_class_dict.get)
 	correct_classifications += (actual_class_test == predicted_class_test)
-	results.write(','.join([str(count),str(actual_class_test), str(predicted_class_test), str(correct_classifications), "\n"]))
+	predictions_file.write(','.join([str(i),str(actual_class_test), str(predicted_class_test), str(correct_classifications), "\n"]))
+
+	print("Actual class: " + actual_class_test)
+	print("Predicted class: " + predicted_class_test)
+	print()
 
 accuracy = (correct_classifications*1.0)/len(test_file_lines)
-results.write("Accuracy: "+str(accuracy))
+results_file.write("Accuracy: "+str(accuracy))
 
 print("Accuracy: " + accuracy)
-
