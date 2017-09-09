@@ -6,9 +6,9 @@ import pickle
 FILE_DIR = os.path.dirname(__file__) + "/../datasets"
 TRAIN_FILE = "r8-train-stemmed.txt"
 TEST_FILE = "r8-test-stemmed.txt"
-SAVE_FILE = "trained_model.pkl"
+SAVE_FILE = "trained_model_naive_bayes.pkl"
 PREDICTION_FILE = "predicted.txt"
-RESULTS_FILE = "predictions_file.txt"
+RESULTS_FILE = "results.txt"
 
 DELIM = '\t'
 

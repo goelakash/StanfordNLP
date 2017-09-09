@@ -2,8 +2,11 @@
 from bisect import bisect_left
 from math import log
 
-def sample():
-	return 1
+
+def get_data_and_label(raw_data, delim='\t', label_pos=0, data_pos=1):
+	labels = [line.split(delim)[label_pos] for line in raw_data]
+	data = [line.split(delim)[data_pos] for line in raw_data]
+	return (data, labels)
 
 def get_vocabulary(documents):
 	return sorted(list(set(' '.join(documents).split()))) # sorted list of unique words
@@ -27,7 +30,7 @@ def bag_of_words(documents):
 
 
 '''
-	returns bag of words scaled by the idf
+	returns tf scaled by the idf
 '''
 def tf_idf(documents):
 	vocab = get_vocabulary(documents)
@@ -37,8 +40,10 @@ def tf_idf(documents):
 		for j in range(len(documents)):
 			if v_space[j][i] > 0:
 				doc_count += 1 #increment doc_count
+				v_space[j][i] /= (1.0*len(documents[j].split()))
 		"""remove this"""
+		print(v_space)
 		print(doc_count)
 		for j in range(len(documents)):
-			v_space[j][i] *= log(len(documents)/(1.0 * (doc_count+1)))
+			v_space[j][i] *= log(1 + len(documents)/(1.0 * (doc_count)))
 	return v_space
